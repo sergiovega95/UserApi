@@ -1,4 +1,5 @@
 ﻿using Core.Entities.Identity;
+using Core.Entities.Shared;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -14,7 +15,11 @@ namespace Infrastructure.IdentityContext
             : base(options)
         {
             
+            
         }
+
+        public DbSet<DocumentType> DocumentType { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
