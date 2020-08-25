@@ -4,9 +4,10 @@ using System.Text;
 
 namespace Core.Exceptions
 {
+    [Serializable()]
     public class UserException:Exception
-    {
-        public UserException(string description) : base(String.Format("Database error: {0}", description))
+    {        
+        public UserException(string description) : base(String.Format(description))
         {
 
         }

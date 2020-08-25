@@ -59,13 +59,27 @@ namespace WebApi
                 // Set the comments path for the Swagger JSON and UI.
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                options.IncludeXmlComments(xmlPath);               
+                options.IncludeXmlComments(xmlPath);
+
+                options.EnableAnnotations();
+                 
             });
 
           
             services.AddIdentity<User, Role>()
             .AddEntityFrameworkStores<DatabaseContext>()
             .AddDefaultTokenProviders();
+
+            services.Configure<IdentityOptions>(options =>
+            {                
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 8;
+                options.Password.RequiredUniqueChars = 0;
+            });
+
 
             //JWT token authentication and authorization
             var key = Encoding.ASCII.GetBytes(Configuration.GetValue<string>("JwtSecret"));      
@@ -93,25 +107,9 @@ namespace WebApi
             services.AddScoped<IUsers,UsersQuery>();
 
 
-
-
-
-
-
-
-
             services.AddControllersWithViews() // or AddControllers() in a Web API
             .AddJsonOptions(options =>
              options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
-
-
-
-
-
-
-
-
-
 
 
 
@@ -141,7 +139,8 @@ namespace WebApi
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Web API V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Users web api");
+                c.RoutePrefix = string.Empty;
             });
 
            

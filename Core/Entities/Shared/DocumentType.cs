@@ -11,6 +11,6 @@ namespace Core.Entities.Shared
         public string Name { get; set; }
 
         [MaxLength(4)]
-        public int Enum  { get; set; }
+        public string Enum  { get; set; }
     }
 }

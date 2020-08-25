@@ -1,11 +1,15 @@
 ﻿using Core.Entities.Identity;
+using Core.Entities.Shared;
 using Core.Exceptions;
 using Core.Interfaces;
 using Infrastructure.IdentityContext;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Infrastructure.Implementations
 {
@@ -13,64 +17,140 @@ namespace Infrastructure.Implementations
     {
         private readonly DatabaseContext _database;
         private readonly UserManager<User> _userManager;
-        public UsersQuery(DatabaseContext  database , UserManager<User> userManager)
+        private readonly SignInManager<User> _signInManager;
+        public UsersQuery(DatabaseContext  database , UserManager<User> userManager, SignInManager<User> signInManager)
         {
             _database = database;
             _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         public async System.Threading.Tasks.Task<IdentityResult> AddUserAsync(User newUser, string password)
         {
-            try
+            if (_database.Users.Any<User>(s=>s.Document.ToLower()==newUser.Document.ToLower()))
             {
-                return await _userManager.CreateAsync(newUser, password);
+                throw new UserException($"Ya existe un usuario registrado con el número de documento {newUser.Document.ToLower()}");
             }
-            catch (Exception e)
+            if (_database.Users.Any<User>(s => s.Email.ToLower() == newUser.Email.ToLower()))
             {
-                throw new DatabaseException("Ocurrió un error al insertar un nuevo usuario");
-            }                       
+                throw new UserException($"Ya existe un usuario registrado con el email {newUser.Email.ToLower()}");
+            }
+            else
+            {
+                try
+                {
+
+                    return await _userManager.CreateAsync(newUser, password);
+
+                }
+                catch (Exception e)
+                {
+                    throw new DatabaseException("Ocurrió un error al insertar un nuevo usuario");
+                }
+            }        
         }
 
         public void DeleteUser(string IdUser)
+        {
+             User usuario = _database.Users.Where(s=>s.Id.ToString().ToLower()== IdUser.ToLower());
+
+            if (usuario!=null)
+            {
+                try
+                {
+                  _database.Remove<User>(usuario);
+                  _database.SaveChanges();
+                }
+                catch (Exception e)
+                {
+                    throw new DatabaseException($"Ocurrió un error al eliminar el usuario con Id {IdUser}");
+                }
+            }
+            else
+            {
+                throw new UserException($"El usuario con Id {IdUser}, no se encuentra registrado");
+            }         
+                   
+        }
+
+        public List<User> GetAllUsers()
+        {
+            try
+            {
+                return  _database.Users.Include(s => s.DocumentType).ToList();
+               
+            }
+            catch (Exception e)
+            {
+                throw new DatabaseException($"Ocurrió un error al consultar los usuarios");
+            }
+           
+        }
+
+        public DocumentType GetDocumentTypeByEnum(string Enum)
+        {
+            DocumentType documentType = _database.DocumentType.Where(s=>s.Enum.ToUpper()==Enum.ToUpper()).FirstOrDefault();
+
+            if (documentType!=null)
+            {
+                return documentType;
+            }
+            else
+            {
+                throw new UserException($"Documento {Enum} no encontrado");
+            }
+        }
+
+        public User GetUserById(string IdUser)
         {
             try
             {
                 User usuario = _database.Users.Find(IdUser);
 
-                if (usuario!=null)
+                if (usuario != null)
                 {
-
+                    return usuario;
                 }
                 else
                 {
-                    throw new Exception();
+                    throw new UserException($"El usuario con Id {IdUser}, no se encuentra registrado");
                 }
 
             }
             catch (Exception e)
             {
-                throw new DatabaseException($"Ocurrió un error al eliminar el usuario con Id {IdUser}");
+                throw new DatabaseException($"Ocurrió un error al consultar el usuario con Id {IdUser}");
             }
-
-            throw new NotImplementedException();
-        }
-
-        public List<User> GetAllUsers()
-        {
-            throw new NotImplementedException();
-        }
-
-        public User GetUserById(string IdUser)
-        {
-            throw new NotImplementedException();
         }
 
         public User GetUserByIdentification(string Identification)
         {
-            throw new NotImplementedException();
+            try
+            {
+                User usuario = _database.Users.Where(s => s.Document.ToLower() == Identification.ToLower()).Include(s=>s.DocumentType).FirstOrDefault();
+
+                if (usuario != null)
+                {
+                    return usuario;
+                }
+                else
+                {
+                    throw new UserException($"El usuario con identificación {Identification.ToLower()}, no se encuentra registrado");
+                }
+
+            }
+            catch (Exception e)
+            {
+                throw new DatabaseException($"Ocurrió un error al consultar el usuario con identificación {Identification.ToLower()}");
+            }
         }
 
-        public void UpdateUser(User User)
+        public async Task<SignInResult> LoginAsync(string identification, string password)
+        {
+            return await _signInManager.PasswordSignInAsync(identification, password, true, lockoutOnFailure: false);
+        }
+
+        public void UpdateUser(User UserModified)
         {
             throw new NotImplementedException();
         }

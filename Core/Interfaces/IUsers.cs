@@ -1,8 +1,10 @@
 ﻿using Core.Entities.Identity;
+using Core.Entities.Shared;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Core.Interfaces
 {
@@ -48,5 +50,19 @@ namespace Core.Interfaces
         /// <param name="IdUser"></param>
         void DeleteUser (string IdUser);
 
+        /// <summary>
+        /// Get document type by enum
+        /// </summary>
+        /// <param name=""></param>
+        /// <returns></returns>
+        DocumentType GetDocumentTypeByEnum(string Enum);
+
+        /// <summary>
+        ///   SignIn
+        /// </summary>
+        /// <param name="identification"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
+        Task<SignInResult> LoginAsync(string identification, string password);
     }
 }
