@@ -1,0 +1,64 @@
+﻿@page
+@using RazorClient.Pages
+@model UserModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+@Html.AntiForgeryToken()
+@using DevExtreme.AspNet.Mvc
+@using RazorClient.Models
+
+<script>
+
+    $.ajaxSetup({
+        data: {
+            __RequestVerificationToken: document.getElementsByName("__RequestVerificationToken")[0].value
+        }
+    });
+
+</script>
+
+
+<div class="text-center mt-5">
+   @(Html.DevExtreme().DataGrid<User>()
+   .DataSource(d=>d.RemoteController()
+   .LoadUrl("?handler=GetUsers")
+   .DeleteUrl("?handler=DeleteUser")
+   .UpdateUrl("?handler=UpdateUser")
+   .InsertUrl("?handler=InsertUser")
+   .Key("IdUser")
+   )
+   .FilterRow(filterRow => filterRow
+   .Visible(true)
+   .ApplyFilter(GridApplyFilterMode.Auto))
+   .AllowColumnResizing(true)
+   .ColumnAutoWidth(false)
+   .Paging(paging => paging.PageSize(10))
+   .Pager(pager =>
+   {
+    pager.ShowPageSizeSelector(true);
+    pager.ShowNavigationButtons(true);
+    pager.Visible(true);
+    pager.AllowedPageSizes(new[] { 5, 10, 20 });
+    pager.ShowInfo(true);
+   })
+   .ColumnFixing(c => c.Enabled(true))
+   .ShowColumnLines(true)
+   .ShowRowLines(true)
+   .RowAlternationEnabled(true)
+   .ShowBorders(true)
+   .Editing(e=>e.AllowAdding(true).AllowDeleting(true).AllowUpdating(true).Mode( GridEditMode.Form).UseIcons(true))
+   .Columns(c=>
+   {
+       //c.AddFor(m=>m.DocumentType.Id).Caption("Tipo de documento").ValidationRules(s=>s.AddRequired().Message("Campo Obligatorio")).FormItem(e=>e.Editor(s=>s.SelectBox()));
+       c.AddFor(m=>m.Document).Caption("Documento").ValidationRules(s => s.AddRequired().Message("Campo Obligatorio")).FormItem(e => e.Editor(s => s.TextBox()));
+       c.AddFor(m=>m.Name).Caption("Nombre").ValidationRules(s => s.AddRequired().Message("Campo Obligatorio")).FormItem(e => e.Editor(s => s.TextBox()));
+       c.AddFor(m=>m.LastName).Caption("Apellido").ValidationRules(s => s.AddRequired().Message("Campo Obligatorio")).FormItem(e => e.Editor(s => s.TextBox()));
+       c.AddFor(m=>m.Email).Caption("Correo Electronico").ValidationRules(s => s.AddRequired().Message("Campo Obligatorio")).FormItem(e => e.Editor(s => s.TextBox()));
+       c.AddFor(m=>m.Password).Caption("Contraseña").Visible(false).ValidationRules(s => s.AddRequired().Message("Campo Obligatorio")).ValidationRules(t=>t.AddStringLength().Min(8).Max(20).Message("Mínimo 8 caracteres")).FormItem(e => e.Editor(s => s.TextBox()));
+
+   })
+    )
+</div>
+

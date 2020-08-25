@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using DevExtreme.AspNet.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using RazorClient.Models;
 
 namespace RazorClient.Pages
 {
@@ -20,6 +23,19 @@ namespace RazorClient.Pages
         public void OnGet()
         {
 
-        }
+        }      
+
+        public JsonResult OnPostlogin()
+        {
+            try
+            {
+
+            }
+            catch (Exception e)
+            {
+
+            }
+            return new JsonResult(true);
+        }      
     }
 }

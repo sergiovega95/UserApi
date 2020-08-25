@@ -1,10 +1,93 @@
 ﻿@page
+@using RazorClient.Pages
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
 }
+@Html.AntiForgeryToken()
+@using DevExtreme.AspNet.Mvc
+@using RazorClient.Models
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+
+<style>
+    html,
+    body {
+        height: 100%;
+    }
+
+    body {
+        display: -ms-flexbox;
+        display: -webkit-box;
+        display: flex;
+        -ms-flex-align: center;
+        -ms-flex-pack: center;
+        -webkit-box-align: center;
+        align-items: center;
+        -webkit-box-pack: center;
+        justify-content: center;
+        padding-top: 40px;
+        padding-bottom: 40px;
+        background-color: #f5f5f5;
+    }
+
+    .form-signin {
+        width: 100%;
+        max-width: 330px;
+        padding: 15px;
+        margin: 0 auto;
+    }
+
+        .form-signin .checkbox {
+            font-weight: 400;
+        }
+
+        .form-signin .form-control {
+            position: relative;
+            box-sizing: border-box;
+            height: auto;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+            .form-signin .form-control:focus {
+                z-index: 2;
+            }
+
+        .form-signin input[type="email"] {
+            margin-bottom: -1px;
+            border-bottom-right-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
+        .form-signin input[type="password"] {
+            margin-bottom: 10px;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+        }
+</style>
+
+<form class="form-signin">
+    <img class="mb-4" src="https://img.icons8.com/officel/2x/26e07f/user.png" alt="" width="72" height="72">
+    <h1 class="h3 mb-3 font-weight-normal">Iniciar Sesión</h1>
+    @using (Html.BeginForm(FormMethod.Post, new { role = "form", id = "formularioiniciosesion" }))
+    {
+
+        @Html.AntiForgeryToken();
+        @using (Html.DevExtreme().ValidationGroup())
+        {
+            @(Html.DevExtreme().Form<InicioSesion>()
+            .ID("formInicioSesion").ElementAttr("class", "marginBottom")
+            .Items(items =>
+            {
+                items.AddSimpleFor(s => s.Identification).ValidationRules(s=>s.AddRequired().Message("Campo Obligatorio")).Label(l => { l.Location(FormLabelLocation.Top);l.Text("Identificación"); }).Editor(e => e.TextBox().MaxLength(200));
+                items.AddSimpleFor(s => s.Password).ValidationRules(s => s.AddRequired().Message("Campo Obligatorio")).Label(l => { l.Location(FormLabelLocation.Top);l.Text("Contraseña");}).Editor(e => e.TextBox().Mode(TextBoxMode.Password).MaxLength(200));
+                items.AddButton().HorizontalAlignment(HorizontalAlignment.Center).ButtonOptions(b => b.Text("Entrar").ElementAttr("class", "d-block").Type(ButtonType.Default).OnClick("IniciarSesion")
+                );
+            })
+            )
+        }
+    }
+    <p class="mt-5 mb-3 text-muted">&copy; Sergio Vega 2020</p>
+</form>
+
+<script src="~/js/Login.js"></script>
