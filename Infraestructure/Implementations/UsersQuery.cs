@@ -33,6 +33,25 @@ namespace Infrastructure.Implementations
 
         public void DeleteUser(string IdUser)
         {
+            try
+            {
+                User usuario = _database.Users.Find(IdUser);
+
+                if (usuario!=null)
+                {
+
+                }
+                else
+                {
+                    throw new Exception();
+                }
+
+            }
+            catch (Exception e)
+            {
+                throw new DatabaseException($"Ocurrió un error al eliminar el usuario con Id {IdUser}");
+            }
+
             throw new NotImplementedException();
         }
 
