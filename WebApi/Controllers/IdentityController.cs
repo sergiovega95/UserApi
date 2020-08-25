@@ -17,6 +17,7 @@ using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Annotations;
 using WebApi.Models;
 using WebApi.Models.Request;
+using WebApi.Models.Response;
 using WebApi.Models.Shared;
 using WebApi.Shared;
 
@@ -51,21 +52,33 @@ namespace WebApi.Controllers
         /// <returns></returns>
         [HttpGet("Users")]
         [Produces("application/json")]
-        [SwaggerResponse(200, "Operacion Exitosa", typeof(BaseResponse))]
-        [SwaggerResponse(500, "Error interno del sistema", typeof(BaseResponse))]
+        [SwaggerResponse(200, "Operacion Exitosa", typeof(ResponseUsers))]
+        [SwaggerResponse(500, "Error interno del sistema", typeof(ResponseUsers))]
         [AllowAnonymous]
         public IActionResult GetAllUsers()
         {
             HttpStatusCode statusCode = HttpStatusCode.OK;
-            ResponseSignInUser response = new ResponseSignInUser();
+            ResponseUsers response = new ResponseUsers();
 
             try
             {
-
+                response.Usuarios = _users.GetAllUsers();
+            }
+            catch (DatabaseException e)
+            {
+                statusCode = HttpStatusCode.InternalServerError;
+                response.StatusCode = (int)statusCode;
+                response.IsSucessfull = false;
+                response.ErrorMessage = e.Message;
+                _logger.LogError(e, $"Failed to get list user");
             }
             catch (Exception e)
             {
-
+                statusCode = HttpStatusCode.InternalServerError;
+                response.StatusCode = (int)statusCode;
+                response.IsSucessfull = false;
+                response.ErrorMessage = e.Message;
+                _logger.LogError(e, $"Failed to get list user");
             }
 
             return StatusCode((int)statusCode, response);
@@ -82,18 +95,30 @@ namespace WebApi.Controllers
         [SwaggerResponse(500, "Error interno del sistema", typeof(BaseResponse))]
         [Produces("application/json")]
         [AllowAnonymous]
-        public IActionResult GetUserById(string id)
+        public IActionResult GetUserById(int id)
         {
             HttpStatusCode statusCode = HttpStatusCode.OK;
-            ResponseSignInUser response = new ResponseSignInUser();
+            ResponseUsers response = new ResponseUsers();
 
             try
+            {               
+                response.Usuarios.Add(_users.GetUserById(id));
+            }
+            catch (UserException e)
             {
-
+                statusCode = HttpStatusCode.NotFound;
+                response.StatusCode = (int)statusCode;
+                response.IsSucessfull = false;
+                response.ErrorMessage = e.Message;
+                _logger.LogInformation(e, $"User with id {id.ToString()} not found");
             }
             catch (Exception e)
             {
-
+                statusCode = HttpStatusCode.InternalServerError;
+                response.StatusCode = (int)statusCode;
+                response.IsSucessfull = false;
+                response.ErrorMessage = e.Message;
+                _logger.LogError(e, $"Failed to get user with id {id.ToString()}");
             }
 
             return StatusCode((int)statusCode, response);
@@ -113,15 +138,37 @@ namespace WebApi.Controllers
         public IActionResult GetUserByidentification(string identification)
         {
             HttpStatusCode statusCode = HttpStatusCode.OK;
-            ResponseSignInUser response = new ResponseSignInUser();
+            ResponseUsers response = new ResponseUsers();
 
             try
             {
-
+                if (!string.IsNullOrEmpty(identification))
+                {
+                    response.Usuarios.Add(_users.GetUserByIdentification(identification));
+                }
+                else
+                {
+                    statusCode = HttpStatusCode.BadRequest;
+                    response.StatusCode = (int)statusCode;
+                    response.IsSucessfull = false;
+                    response.ErrorMessage = "Datos invalidos";
+                }
+            }
+            catch (UserException e)
+            {
+                statusCode = HttpStatusCode.NotFound;
+                response.StatusCode = (int)statusCode;
+                response.IsSucessfull = false;
+                response.ErrorMessage = e.Message;
+                _logger.LogInformation(e, $"User with identification {identification} not found");
             }
             catch (Exception e)
             {
-
+                statusCode = HttpStatusCode.InternalServerError;
+                response.StatusCode = (int)statusCode;
+                response.IsSucessfull = false;
+                response.ErrorMessage = e.Message;
+                _logger.LogError(e, $"Failed to get user with identification {identification}");
             }
 
             return StatusCode((int)statusCode, response);
@@ -172,7 +219,7 @@ namespace WebApi.Controllers
                     else
                     {
                         var userRegistered = await _userManager.FindByEmailAsync(newUser.Email);
-                        response.IdUser = userRegistered.Id.ToString();
+                        response.IdUser = userRegistered.IdUser.ToString();
                     }
 
                 }
@@ -318,31 +365,24 @@ namespace WebApi.Controllers
         [HttpDelete("DeleteUser")]
         [Produces("application/json")]
         [AllowAnonymous]
-        public async Task<IActionResult> DeleteUser(string IdUser)
+        public async Task<IActionResult> DeleteUser(int IdUser)
         {
             HttpStatusCode statusCode = HttpStatusCode.OK;
             BaseResponse response = new BaseResponse();
 
             try
-            {
-                if (!string.IsNullOrEmpty(IdUser))
-                {
-                    _users.DeleteUser(IdUser);
-                }
-                else
-                {
-                    throw new UserException("Datos invalidos");
-                }
-
+            {                
+                _users.DeleteUser(IdUser);            
+               
             }
             catch (UserException e)
             {
-                statusCode = HttpStatusCode.BadRequest;
+                statusCode = HttpStatusCode.NotFound;
                 response.StatusCode = (int)statusCode;
                 response.IsSucessfull = false;
                 response.ErrorMessage = e.Message;
                 response.Errors.Add(e.Message);
-                _logger.LogError(e, $"Failed to delete user with id: {IdUser}");
+                _logger.LogError(e, $"Failed to delete user with id: {IdUser}, user not found");
             }
             catch (DatabaseException e)
             {

@@ -50,9 +50,10 @@ namespace Infrastructure.Implementations
             }        
         }
 
-        public void DeleteUser(string IdUser)
+        public void DeleteUser(int  IdUser)
         {
-             User usuario = _database.Users.Where(s=>s.Id.ToString().ToLower()== IdUser.ToLower());
+           
+            User usuario = _database.Users.Where(s=>s.IdUser == IdUser).FirstOrDefault();
 
             if (usuario!=null)
             {
@@ -101,48 +102,34 @@ namespace Infrastructure.Implementations
             }
         }
 
-        public User GetUserById(string IdUser)
+        public User GetUserById(int IdUser)
         {
-            try
-            {
-                User usuario = _database.Users.Find(IdUser);
+            
+            User usuario = _database.Users.Where(s=>s.IdUser== IdUser).Include(s=>s.DocumentType).FirstOrDefault();
 
-                if (usuario != null)
-                {
-                    return usuario;
-                }
-                else
-                {
-                    throw new UserException($"El usuario con Id {IdUser}, no se encuentra registrado");
-                }
-
-            }
-            catch (Exception e)
+            if (usuario != null)
             {
-                throw new DatabaseException($"Ocurrió un error al consultar el usuario con Id {IdUser}");
+                return usuario;
             }
+            else
+            {
+                throw new UserException($"El usuario con Id {IdUser}, no se encuentra registrado");
+            }
+          
         }
 
         public User GetUserByIdentification(string Identification)
-        {
-            try
-            {
-                User usuario = _database.Users.Where(s => s.Document.ToLower() == Identification.ToLower()).Include(s=>s.DocumentType).FirstOrDefault();
+        {          
+            User usuario = _database.Users.Where(s => s.Document.ToLower() == Identification.ToLower()).Include(s=>s.DocumentType).FirstOrDefault();
 
-                if (usuario != null)
-                {
-                    return usuario;
-                }
-                else
-                {
-                    throw new UserException($"El usuario con identificación {Identification.ToLower()}, no se encuentra registrado");
-                }
-
-            }
-            catch (Exception e)
+            if (usuario != null)
             {
-                throw new DatabaseException($"Ocurrió un error al consultar el usuario con identificación {Identification.ToLower()}");
+                return usuario;
             }
+            else
+            {
+                throw new UserException($"El usuario con identificación {Identification.ToLower()}, no se encuentra registrado");
+            }            
         }
 
         public async Task<SignInResult> LoginAsync(string identification, string password)

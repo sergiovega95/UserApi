@@ -21,7 +21,7 @@ namespace Core.Interfaces
        /// </summary>
        /// <param name="IdUser"></param>
        /// <returns></returns>
-        User GetUserById(string IdUser);
+        User GetUserById(int IdUser);
 
         /// <summary>
         /// Get User by Identification
@@ -48,7 +48,7 @@ namespace Core.Interfaces
         /// Delete User with specific Id
         /// </summary>
         /// <param name="IdUser"></param>
-        void DeleteUser (string IdUser);
+        void DeleteUser (int IdUser);
 
         /// <summary>
         /// Get document type by enum

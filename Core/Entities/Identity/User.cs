@@ -11,6 +11,11 @@ namespace Core.Entities.Identity
     public class User: IdentityUser<Guid>
     {
         [Required]
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int IdUser { get; set; }
+
+        [Required]
         [MaxLength(200)]
         public string Name { get; set; }
 

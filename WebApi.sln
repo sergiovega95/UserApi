@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infraestructure\Infrastructure.csproj", "{51FBD41E-310D-4613-B96D-DE2FB65C77B3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RazorClient", "RazorClient\RazorClient.csproj", "{AA494563-C68F-4296-B165-2F86BEF3902A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{51FBD41E-310D-4613-B96D-DE2FB65C77B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{51FBD41E-310D-4613-B96D-DE2FB65C77B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{51FBD41E-310D-4613-B96D-DE2FB65C77B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA494563-C68F-4296-B165-2F86BEF3902A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA494563-C68F-4296-B165-2F86BEF3902A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA494563-C68F-4296-B165-2F86BEF3902A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA494563-C68F-4296-B165-2F86BEF3902A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
