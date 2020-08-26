@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Services.Implementations;
+using Services.Interface;
 
 namespace RazorClient
 {
@@ -25,7 +27,7 @@ namespace RazorClient
         {
             services.AddRazorPages().AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
-        }
+            services.AddScoped <IUserServices, UserService>();        }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

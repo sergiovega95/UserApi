@@ -4,6 +4,10 @@
 @{
     ViewData["Title"] = "Home page";
 }
+@{
+    Layout = "_LayoutUsers";
+}
+
 
 @Html.AntiForgeryToken()
 @using DevExtreme.AspNet.Mvc
@@ -20,8 +24,10 @@
 </script>
 
 
+<h1 style="text-align:left" class="mt-5">GESTIÓN DE USUARIOS</h1>
+
 <div class="text-center mt-5">
-   @(Html.DevExtreme().DataGrid<User>()
+    @(Html.DevExtreme().DataGrid<User>()
    .DataSource(d=>d.RemoteController()
    .LoadUrl("?handler=GetUsers")
    .DeleteUrl("?handler=DeleteUser")
@@ -55,7 +61,7 @@
        c.AddFor(m=>m.Document).Caption("Documento").ValidationRules(s => s.AddRequired().Message("Campo Obligatorio")).FormItem(e => e.Editor(s => s.TextBox()));
        c.AddFor(m=>m.Name).Caption("Nombre").ValidationRules(s => s.AddRequired().Message("Campo Obligatorio")).FormItem(e => e.Editor(s => s.TextBox()));
        c.AddFor(m=>m.LastName).Caption("Apellido").ValidationRules(s => s.AddRequired().Message("Campo Obligatorio")).FormItem(e => e.Editor(s => s.TextBox()));
-       c.AddFor(m=>m.Email).Caption("Correo Electronico").ValidationRules(s => s.AddRequired().Message("Campo Obligatorio")).FormItem(e => e.Editor(s => s.TextBox()));
+       c.AddFor(m=>m.Email).Caption("Correo Electronico").ValidationRules(s => s.AddRequired().Message("Campo Obligatorio")).ValidationRules(s=>s.AddEmail().Message("Formato de correo inválido")).FormItem(e => e.Editor(s => s.TextBox()));
        c.AddFor(m=>m.Password).Caption("Contraseña").Visible(false).ValidationRules(s => s.AddRequired().Message("Campo Obligatorio")).ValidationRules(t=>t.AddStringLength().Min(8).Max(20).Message("Mínimo 8 caracteres")).FormItem(e => e.Editor(s => s.TextBox()));
 
    })

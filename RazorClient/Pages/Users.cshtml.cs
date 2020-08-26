@@ -9,16 +9,19 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using RazorClient.Models;
+using RestSharp;
+using Services.Interface;
 
 namespace RazorClient.Pages
 {
     public class UserModel : PageModel
     {
         private readonly ILogger<UserModel> _logger;
-
-        public UserModel(ILogger<UserModel> logger)
+        private readonly IUserServices _user;
+        public UserModel(ILogger<UserModel> logger , IUserServices user)
         {
             _logger = logger;
+            _user = user;
         }
 
         public void OnGet()
@@ -32,7 +35,18 @@ namespace RazorClient.Pages
 
             try
             {
-                return new JsonResult(DataSourceLoader.Load(usuarios, loadOptionsBase));
+                var response = _user.GetUsers();
+
+                if (response.StatusCode==HttpStatusCode.OK)
+                {
+                    usuarios = JsonConvert.DeserializeObject<User>(response.Content);
+                    return new JsonResult(DataSourceLoader.Load(usuarios, loadOptionsBase));
+                }
+                else
+                {
+                    usuarios = JsonConvert.DeserializeObject<User>(response.Content);
+                    return BadRequest(response);
+                }                
 
             }
             catch (Exception e)
@@ -46,10 +60,19 @@ namespace RazorClient.Pages
         {
             try
             {   
-                NewUser newuser = new NewUser();
+                NewUser newuser = new NewUser();                
                 JsonConvert.PopulateObject(values, newuser);
-                return new JsonResult(HttpStatusCode.OK);
+                newuser.DocumentType = Core.Enums.EnumDocumentType.CC;
+                IRestResponse response=  _user.AddUser(newuser);
 
+                if (response.StatusCode!=HttpStatusCode.OK)
+                {
+                    var respuesta = JsonConvert.DeserializeObject<LoginResponse>(response.Content);
+                    return BadRequest(respuesta.ErrorMessage);
+                }
+               
+                return new JsonResult(HttpStatusCode.OK);
+                
             }
             catch (Exception e)
             {
@@ -61,6 +84,7 @@ namespace RazorClient.Pages
         {
             try
             {
+                _user.DeleteUser(key);
                 return new JsonResult(HttpStatusCode.OK);
             }
             catch (Exception e)
@@ -73,6 +97,7 @@ namespace RazorClient.Pages
         {
             try
             {
+                _user.UpdateUser(key);
                 return new JsonResult(HttpStatusCode.OK);
             }
             catch (Exception e)

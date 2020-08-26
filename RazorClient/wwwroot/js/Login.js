@@ -12,11 +12,24 @@ function IniciarSesion()
 
         $.ajax({
             method: "POST",         
-            url: "?handler=login"            
+            url: "/Index?handler=IniciarSesion" ,   
+            data: { form: formularioInicioSesion}
         })
-        .done(function (msg) 
+        .done(function (data) 
         {
-           
+            if (data!=null)
+            {
+                Swal.fire(
+                    'Atención',
+                    data.ErrorMessage,
+                    'info'
+                )
+            }
+            else
+            {
+                window.location.replace("/Users");
+            }
+            
         });
     }
 }

@@ -69,8 +69,8 @@
 <form class="form-signin">
     <img class="mb-4" src="https://img.icons8.com/officel/2x/26e07f/user.png" alt="" width="72" height="72">
     <h1 class="h3 mb-3 font-weight-normal">Iniciar Sesión</h1>
-    @using (Html.BeginForm(FormMethod.Post, new { role = "form", id = "formularioiniciosesion" }))
-    {
+     @using (Html.BeginForm(FormMethod.Post, new { role = "form", id = "formularioiniciosesion" }))
+     {
 
         @Html.AntiForgeryToken();
         @using (Html.DevExtreme().ValidationGroup())

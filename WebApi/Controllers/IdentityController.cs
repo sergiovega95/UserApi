@@ -301,7 +301,7 @@ namespace WebApi.Controllers
                 }
                 else
                 {
-                    response.ErrorMessage = $"Falló la autenticación del usuario con identificación: {document}, credenciales invalidas";
+                    response.ErrorMessage = "Credenciales inválidas";
                     response.Errors.Add(response.ErrorMessage);
                 }
 

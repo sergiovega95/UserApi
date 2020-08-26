@@ -7,17 +7,22 @@ using DevExtreme.AspNet.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using RazorClient.Models;
+using RestSharp;
+using Services.Interface;
 
 namespace RazorClient.Pages
 {
     public class IndexModel : PageModel
     {
+        private readonly IUserServices _user;
         private readonly ILogger<IndexModel> _logger;
 
-        public IndexModel(ILogger<IndexModel> logger)
+        public IndexModel(ILogger<IndexModel> logger , IUserServices user)
         {
             _logger = logger;
+            _user = user;
         }
 
         public void OnGet()
@@ -25,17 +30,27 @@ namespace RazorClient.Pages
 
         }      
 
-        public JsonResult OnPostlogin()
+        public JsonResult OnPostIniciarSesion(InicioSesion form)
         {
             try
-            {
+            {                
+                IRestResponse response =_user.SignInUser(form.Identification,form.Password);
 
+                if (response.StatusCode!=System.Net.HttpStatusCode.OK)
+                {
+                    var respuesta = JsonConvert.DeserializeObject<LoginResponse>(response.Content);
+                    return new JsonResult(respuesta);
+                }
+                else
+                {
+                    return new JsonResult(null);
+                }
+                             
             }
             catch (Exception e)
             {
-
-            }
-            return new JsonResult(true);
+               return new JsonResult(false,null);
+            }            
         }      
     }
 }
