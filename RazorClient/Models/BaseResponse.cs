@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace RazorClient.Models
 {
-    public class LoginResponse
+    public class BaseResponse
     {
         public DateTime DateTimeRequest { get; set; } = DateTime.Now;
         public int StatusCode { get; set; } = 200;

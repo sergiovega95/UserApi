@@ -13,5 +13,6 @@ namespace Services.Interface
         IRestResponse UpdateUser(object user);
         IRestResponse DeleteUser(int Iduser);
         IRestResponse AddUser(object user);
+        IRestResponse GetDocumentTypes();
     }
 }

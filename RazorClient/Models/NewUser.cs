@@ -1,4 +1,5 @@
-﻿using Core.Enums;
+﻿using Core.Entities.Shared;
+using Core.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -16,7 +17,7 @@ namespace RazorClient.Models
         public string LastName { get; set; }
 
         [Required]
-        public EnumDocumentType DocumentType { get; set; }
+        public DocumentType DocumentType { get; set; }
 
         [Required]
         public string Document { get; set; }
@@ -27,5 +28,6 @@ namespace RazorClient.Models
 
         [Required]
         public string Password { get; set; }
+  
     }
 }

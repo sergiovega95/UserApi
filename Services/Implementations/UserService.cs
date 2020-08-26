@@ -25,7 +25,7 @@ namespace Services.Implementations
 
         public IRestResponse DeleteUser(int IdUser)
         {
-            RestClient client = new RestClient(BASEURL + "");
+            RestClient client = new RestClient(BASEURL + $"/api/v1/Identity/DeleteUser?IdUser={IdUser}");
             client.Timeout = 5000;
             RestRequest request = new RestRequest(Method.DELETE);
             request.AddHeader("Content-Type", "application/json");
@@ -45,7 +45,7 @@ namespace Services.Implementations
 
         public IRestResponse GetUsers()
         {
-            RestClient client = new RestClient(BASEURL + "");
+            RestClient client = new RestClient(BASEURL + "/api/v1/Identity/Users");
             client.Timeout = 5000;
             RestRequest request = new RestRequest(Method.GET);
             request.AddHeader("Content-Type", "application/json");
@@ -71,13 +71,13 @@ namespace Services.Implementations
             request.AddHeader("Content-Type", "application/json");
             IRestResponse response = client.Execute(request);
             return response;
-        }
+        }               
 
-        public IRestResponse GetTypeDocuments()
+        public IRestResponse GetDocumentTypes()
         {
-            RestClient client = new RestClient(BASEURL + "");
+            RestClient client = new RestClient(BASEURL + "/api/v1/Identity/DocumentsType");
             client.Timeout = 5000;
-            RestRequest request = new RestRequest(Method.PUT);
+            RestRequest request = new RestRequest(Method.GET);
             request.AddHeader("Content-Type", "application/json");
             IRestResponse response = client.Execute(request);
             return response;

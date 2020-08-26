@@ -64,5 +64,11 @@ namespace Core.Interfaces
         /// <param name="password"></param>
         /// <returns></returns>
         Task<SignInResult> LoginAsync(string identification, string password);
+
+        /// <summary>
+        /// Get documents
+        /// </summary>
+        /// <returns></returns>
+        List<DocumentType> GetDocumentTypes();
     }
 }

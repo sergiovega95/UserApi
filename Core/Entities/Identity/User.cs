@@ -15,18 +15,18 @@ namespace Core.Entities.Identity
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int IdUser { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Ingrese el nombre")]
         [MaxLength(200)]
         public string Name { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Ingrese el apellido")]
         [MaxLength(200)]
         public string LastName { get; set; }
 
         [Required]
         public DocumentType DocumentType { get; set; }
 
-        [Required]
+        [Required(ErrorMessage ="Ingrese el número del documento de identidad")]
         [MaxLength(100)]
         public string Document { get; set; }
 

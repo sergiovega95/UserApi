@@ -38,7 +38,7 @@ namespace RazorClient.Pages
 
                 if (response.StatusCode!=System.Net.HttpStatusCode.OK)
                 {
-                    var respuesta = JsonConvert.DeserializeObject<LoginResponse>(response.Content);
+                    var respuesta = JsonConvert.DeserializeObject<BaseResponse>(response.Content);
                     return new JsonResult(respuesta);
                 }
                 else

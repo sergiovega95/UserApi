@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Core.Entities.Shared;
 using DevExtreme.AspNet.Data;
+using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
@@ -39,13 +41,12 @@ namespace RazorClient.Pages
 
                 if (response.StatusCode==HttpStatusCode.OK)
                 {
-                    usuarios = JsonConvert.DeserializeObject<User>(response.Content);
+                    usuarios = JsonConvert.DeserializeObject<UsersResponse>(response.Content).Usuarios;
                     return new JsonResult(DataSourceLoader.Load(usuarios, loadOptionsBase));
                 }
                 else
-                {
-                    usuarios = JsonConvert.DeserializeObject<User>(response.Content);
-                    return BadRequest(response);
+                {                   
+                    return BadRequest(JsonConvert.DeserializeObject<BaseResponse>(response.Content).ErrorMessage);
                 }                
 
             }
@@ -61,13 +62,12 @@ namespace RazorClient.Pages
             try
             {   
                 NewUser newuser = new NewUser();                
-                JsonConvert.PopulateObject(values, newuser);
-                newuser.DocumentType = Core.Enums.EnumDocumentType.CC;
+                JsonConvert.PopulateObject(values, newuser);              
                 IRestResponse response=  _user.AddUser(newuser);
 
                 if (response.StatusCode!=HttpStatusCode.OK)
                 {
-                    var respuesta = JsonConvert.DeserializeObject<LoginResponse>(response.Content);
+                    var respuesta = JsonConvert.DeserializeObject<BaseResponse>(response.Content);
                     return BadRequest(respuesta.ErrorMessage);
                 }
                
@@ -80,11 +80,17 @@ namespace RazorClient.Pages
             }            
         }
                 
-        public IActionResult OnPostDeleteUser(int key)
+        public IActionResult OnDeleteDeleteUser(int key)
         {
             try
             {
-                _user.DeleteUser(key);
+                IRestResponse response = _user.DeleteUser(key);
+
+                if (response.StatusCode!=HttpStatusCode.OK)
+                {
+                    var respuesta = JsonConvert.DeserializeObject<BaseResponse>(response.Content);
+                    return BadRequest(respuesta.ErrorMessage);
+                }
                 return new JsonResult(HttpStatusCode.OK);
             }
             catch (Exception e)
@@ -106,6 +112,35 @@ namespace RazorClient.Pages
             }
 
          
+        }
+
+        public IActionResult OnGetTiposDocumentos(DataSourceLoadOptions loadOptionsBase)
+        {
+            List<DocumentType> documentos = new List<DocumentType>();
+
+            try
+            {
+                var response = _user.GetDocumentTypes();
+
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    if (loadOptionsBase.Filter!=null)
+                    {
+                        var filtro = loadOptionsBase.Filter[1];
+                        documentos = JsonConvert.DeserializeObject<List<DocumentType>>(response.Content).Where(s=>s.Id== Convert.ToInt32(filtro)).ToList();
+                    }
+
+                    documentos = JsonConvert.DeserializeObject <List<DocumentType>>(response.Content);
+                    
+                }
+
+                return new JsonResult(DataSourceLoader.Load(documentos, loadOptionsBase));
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Ocurrió un error inesperado al listar los usuarios");
+            }
+
         }
     }
 }

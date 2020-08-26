@@ -19,7 +19,7 @@ namespace WebApi.Models.Request
         public string LastName { get; set; }
 
         [Required]
-        public EnumDocumentType DocumentType { get; set; }
+        public DocumentType DocumentType { get; set; }
 
         [Required]
         public string Document { get; set; }
@@ -30,5 +30,6 @@ namespace WebApi.Models.Request
 
         [Required]
         public string Password { get; set; }
+   
     }
 }

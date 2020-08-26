@@ -39,7 +39,7 @@ namespace Infrastructure.Implementations
             {
                 try
                 {
-
+                    newUser.DocumentType = _database.DocumentType.Find(newUser.DocumentType.Id);
                     return await _userManager.CreateAsync(newUser, password);
 
                 }
@@ -100,6 +100,11 @@ namespace Infrastructure.Implementations
             {
                 throw new UserException($"Documento {Enum} no encontrado");
             }
+        }
+
+        public List<DocumentType> GetDocumentTypes()
+        {
+            return _database.DocumentType.ToList();
         }
 
         public User GetUserById(int IdUser)

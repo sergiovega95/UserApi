@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace RazorClient.Models
     public class User: Core.Entities.Identity.User
     {
         [NotMapped]
-        public string Password { get; set; }
+        public string Password { get; set; }       
     }
 }

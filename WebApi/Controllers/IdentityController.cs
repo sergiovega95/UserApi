@@ -200,8 +200,8 @@ namespace WebApi.Controllers
 
                 if (Validator.TryValidateObject(newUser, new ValidationContext(newUser), validationResultList))
                 {
-                    DocumentType documentType = _users.GetDocumentTypeByEnum(newUser.DocumentType.ToString());
-                    var user = new User { UserName = newUser.Document, Email = newUser.Email , Document= newUser.Document , Name=newUser.Name, LastName=newUser.LastName , DocumentType= documentType };
+                    //DocumentType documentType = _users.GetDocumentTypeByEnum(newUser.DocumentType.ToString());
+                    var user = new User { UserName = newUser.Document, Email = newUser.Email , Document= newUser.Document , Name=newUser.Name, LastName=newUser.LastName , DocumentType= newUser.DocumentType };
                     var result = await _users.AddUserAsync(user, newUser.Password);
 
                     if (!result.Succeeded)
@@ -403,6 +403,27 @@ namespace WebApi.Controllers
             }
 
             return StatusCode((int)statusCode, response);
+        }
+
+        [HttpGet("DocumentsType")]
+        [Produces("application/json")]
+        [AllowAnonymous]
+        public IActionResult GetDocumentsType()
+        {
+            HttpStatusCode statusCode = HttpStatusCode.OK;
+            object data = new object();
+
+            try
+            {
+               data = _users.GetDocumentTypes();
+
+            }           
+            catch (DatabaseException e)
+            {
+                statusCode = HttpStatusCode.InternalServerError;                
+                _logger.LogError(e, $"Failed to get documents type");
+            }
+            return StatusCode((int)statusCode, data);
         }
     }
 }
