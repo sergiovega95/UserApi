@@ -143,7 +143,12 @@ namespace WebApi
                 c.RoutePrefix = string.Empty;
             });
 
-           
+
+            app.UseCors(builder => builder
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader());
+
         }
     }
 }

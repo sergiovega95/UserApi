@@ -49,7 +49,8 @@ namespace RazorClient.Pages
             }
             catch (Exception e)
             {
-               return new JsonResult(false,null);
+                _logger.LogError(e, $"Failed to login user with identification {form.Identification}");
+                return new JsonResult(false,null);
             }            
         }      
     }

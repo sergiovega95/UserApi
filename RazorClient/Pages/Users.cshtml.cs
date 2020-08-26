@@ -31,6 +31,11 @@ namespace RazorClient.Pages
 
         }
         
+        /// <summary>
+        /// Get all users
+        /// </summary>
+        /// <param name="loadOptionsBase"></param>
+        /// <returns></returns>
         public IActionResult OnGetGetUsers(DataSourceLoadOptionsBase loadOptionsBase)
         {
             List<User> usuarios = new List<User>();
@@ -52,11 +57,17 @@ namespace RazorClient.Pages
             }
             catch (Exception e)
             {
+                _logger.LogError(e, $"Failed to get user");
                 return BadRequest("Ocurrió un error inesperado al listar los usuarios");
             }          
 
         }
-                
+          
+        /// <summary>
+        /// Insert New Users
+        /// </summary>
+        /// <param name="values"></param>
+        /// <returns></returns>
         public IActionResult OnPostInsertUser(string values)
         {
             try
@@ -76,10 +87,16 @@ namespace RazorClient.Pages
             }
             catch (Exception e)
             {
+                _logger.LogError(e, $"Failed to add new user");
                 return BadRequest("Ocurrió un error inesperado al agregar el usuario");
             }            
         }
-                
+        
+        /// <summary>
+        /// Delete User
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public IActionResult OnDeleteDeleteUser(int key)
         {
             try
@@ -95,10 +112,17 @@ namespace RazorClient.Pages
             }
             catch (Exception e)
             {
+                _logger.LogError(e, $"Failed to delete user with id {key}");
                 return BadRequest("Ocurrió un error inesperado al eliminar el usuario");
             }            
         }
         
+        /// <summary>
+        /// Update User
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="values"></param>
+        /// <returns></returns>
         public IActionResult OnPutUpdateUser(int key, string values)
         {
             try
@@ -108,12 +132,18 @@ namespace RazorClient.Pages
             }
             catch (Exception e)
             {
+                _logger.LogError(e, $"Failed to update user with id {key}");
                 return BadRequest("Ocurrió un error inesperado al actualizar los datos del usuario");
             }
 
          
         }
 
+        /// <summary>
+        /// Get Document types
+        /// </summary>
+        /// <param name="loadOptionsBase"></param>
+        /// <returns></returns>
         public IActionResult OnGetTiposDocumentos(DataSourceLoadOptions loadOptionsBase)
         {
             List<DocumentType> documentos = new List<DocumentType>();
@@ -138,6 +168,7 @@ namespace RazorClient.Pages
             }
             catch (Exception e)
             {
+                _logger.LogError(e, $"Failed to get document types");
                 return BadRequest("Ocurrió un error inesperado al listar los usuarios");
             }
 
