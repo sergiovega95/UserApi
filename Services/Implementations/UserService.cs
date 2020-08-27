@@ -16,7 +16,7 @@ namespace Services.Implementations
         {          
            
             RestClient client = new RestClient(BASEURL + "/api/v1/Identity/RegisterUser");
-            client.Timeout = 5000;
+            client.Timeout = 3000;
             RestRequest request = new RestRequest(Method.POST);
             request.AddHeader("Content-Type", "application/json");
             request.AddParameter("application/json", JsonConvert.SerializeObject(user), ParameterType.RequestBody);
@@ -27,7 +27,7 @@ namespace Services.Implementations
         public IRestResponse DeleteUser(int IdUser)
         {
             RestClient client = new RestClient(BASEURL + $"/api/v1/Identity/DeleteUser?IdUser={IdUser}");
-            client.Timeout = 5000;
+            client.Timeout = 3000;
             RestRequest request = new RestRequest(Method.DELETE);
             request.AddHeader("Content-Type", "application/json");
             IRestResponse response = client.Execute(request);
@@ -37,7 +37,7 @@ namespace Services.Implementations
         public IRestResponse GetUserById(int IdUser)
         {
             RestClient client = new RestClient(BASEURL + "");
-            client.Timeout = 5000;
+            client.Timeout = 3000;
             RestRequest request = new RestRequest(Method.GET);
             request.AddHeader("Content-Type", "application/json");
             IRestResponse response = client.Execute(request);
@@ -47,7 +47,7 @@ namespace Services.Implementations
         public IRestResponse GetUsers()
         {
             RestClient client = new RestClient(BASEURL + "/api/v1/Identity/Users");
-            client.Timeout = 5000;
+            client.Timeout = 3000;
             RestRequest request = new RestRequest(Method.GET);
             request.AddHeader("Content-Type", "application/json");
             IRestResponse response = client.Execute(request);
@@ -67,7 +67,7 @@ namespace Services.Implementations
         public IRestResponse UpdateUser(UserUpdate user)
         {
             RestClient client = new RestClient(BASEURL + "/api/v1/Identity/UpdateUser");
-            client.Timeout = 5000;
+            client.Timeout = 3000;
             RestRequest request = new RestRequest(Method.PUT);
             request.AddHeader("Content-Type", "application/json");
             request.AddParameter("application/json", JsonConvert.SerializeObject(user), ParameterType.RequestBody);
@@ -78,7 +78,7 @@ namespace Services.Implementations
         public IRestResponse GetDocumentTypes()
         {
             RestClient client = new RestClient(BASEURL + "/api/v1/Identity/DocumentsType");
-            client.Timeout = 5000;
+            client.Timeout = 3000;
             RestRequest request = new RestRequest(Method.GET);
             request.AddHeader("Content-Type", "application/json");
             IRestResponse response = client.Execute(request);
