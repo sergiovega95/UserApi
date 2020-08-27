@@ -42,7 +42,7 @@ namespace Core.Interfaces
         /// </summary>
         /// <param name="newUser"></param>
         /// <returns></returns>
-        void UpdateUser(User User);
+        void UpdateUser(string json);
 
         /// <summary>
         /// Delete User with specific Id

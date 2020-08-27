@@ -8,12 +8,14 @@ using Core.Entities.Identity;
 using Core.Entities.Shared;
 using Core.Exceptions;
 using Core.Interfaces;
+using Core.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Annotations;
 using WebApi.Models;
 using WebApi.Models.Request;
@@ -28,21 +30,18 @@ namespace WebApi.Controllers
     [ApiController]
     public class IdentityController : ControllerBase
     {
-        private readonly SignInManager<User> _signInManager;
-        private readonly UserManager<User> _userManager;
-        private readonly RoleManager<Role> _roleManager;
+        
+        private readonly UserManager<User> _userManager;    
         private readonly ILogger<IdentityController> _logger;
         public readonly IConfiguration _configuration;
         private readonly IUsers _users;
 
-        public IdentityController(UserManager<User> userManager, SignInManager<User> signInManager, ILogger<IdentityController> logger, IConfiguration configuration,RoleManager<Role> roleManager, IUsers users)
+        public IdentityController(UserManager<User> userManager, ILogger<IdentityController> logger, IConfiguration configuration, IUsers users)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
+            _userManager = userManager;           
             _logger = logger;
-            _configuration = configuration;
-            _roleManager = roleManager;
-             _users=users;
+            _configuration = configuration;          
+            _users=users;
         }
 
 
@@ -346,10 +345,34 @@ namespace WebApi.Controllers
         [HttpPut("UpdateUser")]
         [Produces("application/json")]
         [AllowAnonymous]
-        public async Task<IActionResult> UpdateUser(string IdUser)
+        public async Task<IActionResult> UpdateUser(UserUpdate update)
         {
             HttpStatusCode statusCode = HttpStatusCode.OK;
-            ResponseSignInUser response = new ResponseSignInUser();
+            BaseResponse response = new BaseResponse();
+
+            try
+            {
+                string json = JsonConvert.SerializeObject(update);
+                _users.UpdateUser(json);
+            }
+            catch (UserException e)
+            {
+                statusCode = HttpStatusCode.NotFound;
+                response.StatusCode = (int)statusCode;
+                response.IsSucessfull = false;
+                response.ErrorMessage = e.Message;
+                response.Errors.Add(e.Message);
+                _logger.LogError(e, $"Failed to update user with id: {update.IdUser}, user not found");
+            }
+            catch (Exception e)
+            {
+                statusCode = HttpStatusCode.InternalServerError;
+                response.StatusCode = (int)statusCode;
+                response.IsSucessfull = false;
+                response.ErrorMessage = "Internal server error";
+                _logger.LogError(e, $"Failed to delete user with id: {update.IdUser}");
+            }
+
             return StatusCode((int)statusCode, response);
         }
 
@@ -408,6 +431,8 @@ namespace WebApi.Controllers
         [HttpGet("DocumentsType")]
         [Produces("application/json")]
         [AllowAnonymous]
+        [SwaggerResponse(200, "Exitoso", typeof(List<DocumentType>))]       
+        [SwaggerResponse(500, "Error interno del sistema", typeof(BaseResponse))]
         public IActionResult GetDocumentsType()
         {
             HttpStatusCode statusCode = HttpStatusCode.OK;

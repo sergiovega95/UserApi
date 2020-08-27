@@ -11,14 +11,13 @@
     <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
     <link href="~/css/devextreme/bootstrap.css" rel="stylesheet" />
     <link href="~/css/devextreme/dx.common.css" rel="stylesheet" />
-    @* Predefined themes: https://js.devexpress.com/DevExtreme/Guide/Themes_and_Styles/Predefined_Themes/ *@
     <link href="~/css/devextreme/dx.light.css" rel="stylesheet" />
     <script src="~/js/devextreme/jquery.js"></script>
     <script src="~/js/devextreme/bootstrap.js"></script>
     <script src="~/js/devextreme/dx.all.js"></script>
     <script src="~/js/devextreme/aspnet/dx.aspnet.mvc.js"></script>
     <script src="~/js/devextreme/aspnet/dx.aspnet.data.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    
 </head>
 
 <body class="text-center">
@@ -35,7 +34,7 @@
                 </li>              
             </ul>
             <form class="form-inline my-2 my-lg-0">               
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Cerrar Sesión</button>
+              <button onclick="CloseSesion()"  class="btn btn-outline-success my-2 my-sm-0" type="submit">Cerrar Sesión</button> 
             </form>
         </div>
     </nav>
@@ -46,3 +45,11 @@
 </body>
 
 </html>
+
+<script>   
+
+    function CloseSesion()
+    {
+       window.location.replace("/Index");
+    }
+</script>

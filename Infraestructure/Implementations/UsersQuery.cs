@@ -2,9 +2,11 @@
 using Core.Entities.Shared;
 using Core.Exceptions;
 using Core.Interfaces;
+using Core.Models;
 using Infrastructure.IdentityContext;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -142,9 +144,30 @@ namespace Infrastructure.Implementations
             return await _signInManager.PasswordSignInAsync(identification, password, true, lockoutOnFailure: false);
         }
 
-        public void UpdateUser(User UserModified)
+        public void UpdateUser(string changes)
         {
-            throw new NotImplementedException();
+            UserUpdate  data = JsonConvert.DeserializeObject<UserUpdate>(changes);
+
+            if (_database.Users.Any(s=>s.IdUser==data.IdUser))
+            {
+                if (!string.IsNullOrEmpty(data.Email))
+                {
+                    if (_database.Users.Any(s => s.Email.ToUpper() == data.Email.ToUpper()))
+                    {
+                        throw new UserException($"Ya existe un usuario registrado con el correo {data.Email}");
+                    }
+                }
+               
+                User usuario = _database.Users.Where(s => s.IdUser == data.IdUser).FirstOrDefault();
+                JsonConvert.PopulateObject(changes, usuario);              
+
+                _database.SaveChanges();
+                
+            }
+            else
+            {
+                throw new UserException($"Usuario con Id {data.IdUser} no encontrado");
+            }
         }
     }
 }
