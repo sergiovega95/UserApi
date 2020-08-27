@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Core.Models;
+using Newtonsoft.Json;
 using RestSharp;
 using Services.Interface;
 using System;
@@ -63,12 +64,13 @@ namespace Services.Implementations
             return response;
         }
 
-        public IRestResponse UpdateUser(object user)
+        public IRestResponse UpdateUser(UserUpdate user)
         {
-            RestClient client = new RestClient(BASEURL + "");
+            RestClient client = new RestClient(BASEURL + "/api/v1/Identity/UpdateUser");
             client.Timeout = 5000;
             RestRequest request = new RestRequest(Method.PUT);
             request.AddHeader("Content-Type", "application/json");
+            request.AddParameter("application/json", JsonConvert.SerializeObject(user), ParameterType.RequestBody);
             IRestResponse response = client.Execute(request);
             return response;
         }               

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Core.Entities.Shared;
+using Core.Models;
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Mvc;
@@ -127,8 +128,21 @@ namespace RazorClient.Pages
         {
             try
             {
-                _user.UpdateUser(key);
-                return new JsonResult(HttpStatusCode.OK);
+                UserUpdate user = new UserUpdate();
+                JsonConvert.PopulateObject(values, user);
+                user.IdUser = key;
+                IRestResponse response =  _user.UpdateUser(user);
+
+                if (response.StatusCode==HttpStatusCode.OK)
+                {
+                    return new JsonResult(HttpStatusCode.OK);
+                }
+                else
+                {
+                    var res = JsonConvert.DeserializeObject<BaseResponse>(response.Content)
+                    return BadRequest(res.ErrorMessage);
+                }
+               
             }
             catch (Exception e)
             {

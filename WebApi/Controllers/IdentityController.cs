@@ -428,6 +428,10 @@ namespace WebApi.Controllers
             return StatusCode((int)statusCode, response);
         }
 
+        /// <summary>
+        /// Obtiene los tipos de documentos almacenados en la base de datos (CC ,TI)
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("DocumentsType")]
         [Produces("application/json")]
         [AllowAnonymous]
