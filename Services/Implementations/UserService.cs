@@ -10,7 +10,7 @@ namespace Services.Implementations
 {
     public class UserService : IUserServices
     {
-        private readonly string BASEURL = "https://localhost:44302";
+        private readonly string BASEURL = "http://murmullo95-001-site1.atempurl.com";
 
         public IRestResponse AddUser(object user)
         {          
@@ -57,7 +57,7 @@ namespace Services.Implementations
         public IRestResponse SignInUser(string identification, string password)
         {
             RestClient client = new RestClient(BASEURL + $"/api/v1/Identity/SignInUser?document={identification}&password={password}");
-            client.Timeout = 5000;
+            client.Timeout = 3000;
             RestRequest request = new RestRequest(Method.POST);
             request.AddHeader("Content-Type", "application/json");
             IRestResponse response = client.Execute(request);

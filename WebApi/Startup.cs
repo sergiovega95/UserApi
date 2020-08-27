@@ -44,7 +44,7 @@ namespace WebApi
 
                 options.SwaggerDoc(groupName, new OpenApiInfo
                 {
-                    Title = $"Api users prueba",
+                    Title = $"Api users prueba tecnica carvajal",
                     Version = groupName,
                     Description = "Api",                     
                     Contact = new OpenApiContact

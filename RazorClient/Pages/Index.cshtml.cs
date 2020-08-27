@@ -36,21 +36,25 @@ namespace RazorClient.Pages
             {                
                 IRestResponse response =_user.SignInUser(form.Identification,form.Password);
 
-                if (response.StatusCode!=System.Net.HttpStatusCode.OK)
+                if (response.StatusCode!=System.Net.HttpStatusCode.OK && response.IsSuccessful)
                 {
                     var respuesta = JsonConvert.DeserializeObject<BaseResponse>(response.Content);
                     return new JsonResult(respuesta);
                 }
+                else if(response.StatusCode==System.Net.HttpStatusCode.OK && response.IsSuccessful)
+                {
+                    return new JsonResult(string.Empty);
+                }
                 else
                 {
-                    return new JsonResult(null);
+                    return new JsonResult("Imposible conectar con el apí");
                 }
                              
             }
             catch (Exception e)
             {
                 _logger.LogError(e, $"Failed to login user with identification {form.Identification}");
-                return new JsonResult(false,null);
+                return new JsonResult("Internal server error");
             }            
         }      
     }

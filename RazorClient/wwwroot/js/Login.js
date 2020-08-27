@@ -17,11 +17,12 @@ function IniciarSesion()
         })
         .done(function (data) 
         {
-            if (data!=null)
+           
+            if (data!="")
             {
                 Swal.fire(
                     'Atención',
-                    data.ErrorMessage,
+                    data,
                     'info'
                 )
             }

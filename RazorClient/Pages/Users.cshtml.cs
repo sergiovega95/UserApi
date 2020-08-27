@@ -139,7 +139,7 @@ namespace RazorClient.Pages
                 }
                 else
                 {
-                    var res = JsonConvert.DeserializeObject<BaseResponse>(response.Content)
+                    var res = JsonConvert.DeserializeObject<BaseResponse>(response.Content);
                     return BadRequest(res.ErrorMessage);
                 }
                
