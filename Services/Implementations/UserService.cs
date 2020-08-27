@@ -10,7 +10,7 @@ namespace Services.Implementations
 {
     public class UserService : IUserServices
     {
-        private readonly string BASEURL = "http://murmullo95-001-site1.atempurl.com";
+        private readonly string BASEURL = "http://murmullo95-001-site1.atempurl.co";
 
         public IRestResponse AddUser(object user)
         {          

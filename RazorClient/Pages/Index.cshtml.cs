@@ -36,7 +36,7 @@ namespace RazorClient.Pages
             {                
                 IRestResponse response =_user.SignInUser(form.Identification,form.Password);
 
-                if (response.StatusCode!=System.Net.HttpStatusCode.OK)
+                if (response.StatusCode!=System.Net.HttpStatusCode.OK && response.StatusCode!=0)
                 {
                     var respuesta = JsonConvert.DeserializeObject<BaseResponse>(response.Content);
                     return new JsonResult(respuesta.ErrorMessage);
