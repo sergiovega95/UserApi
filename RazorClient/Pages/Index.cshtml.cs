@@ -43,17 +43,19 @@ namespace RazorClient.Pages
                 }
                 else if(response.StatusCode==System.Net.HttpStatusCode.OK && response.IsSuccessful)
                 {
+                    _logger.LogInformation($"Inició sesión el usuario con identificación {form.Identification}");
                     return new JsonResult(string.Empty);
                 }
                 else
                 {
+                    _logger.LogError($"Imposible conectar con el apí");
                     return new JsonResult("Imposible conectar con el apí");
                 }
                              
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Failed to login user with identification {form.Identification}");
+                _logger.LogError(e, $"Falló el inicio de sesión para el usuario con identificación {form.Identification}");
                 return new JsonResult("Internal server error");
             }            
         }      
