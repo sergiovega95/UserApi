@@ -56,10 +56,12 @@
    .RowAlternationEnabled(true)
    .ShowBorders(true)
    .OnEditingStart("IniciaEdicion")
-   .Editing(e=>e.AllowAdding(true).AllowDeleting(true).AllowUpdating(true).Mode( GridEditMode.Form).UseIcons(true))
+   .OnInitNewRow("insertando")
+   .Editing(e=>e.AllowAdding(true).AllowDeleting(true).AllowUpdating(true).Mode( GridEditMode.Form).UseIcons(true).Form(s=>s.CustomizeItem("customize")))
+   
    .Columns(c=>
    {
-       //c.AddFor(m => m.IdUser).AllowEditing(false).Visible(true);
+      
        c.AddFor(m=>m.DocumentType.Id).Lookup(l=>l.DataSource(d=>d.RemoteController().LoadUrl("?handler=TiposDocumentos").Key("Id")).DisplayExpr("Name").ValueExpr("Id")).Caption("Tipo de documento").ValidationRules(s=>s.AddRequired().Message("Campo Obligatorio")).FormItem(e=>e.Editor(s=>s.SelectBox().DataSource(s=>s.RemoteController().LoadUrl("?handler=TiposDocumentos").Key("Id")).DisplayExpr("Name").ValueExpr("Id")));
        c.AddFor(m=>m.Document).Caption("Documento").ValidationRules(s => s.AddRequired().Message("Campo Obligatorio")).FormItem(e => e.Editor(s => s.TextBox()));
        c.AddFor(m=>m.Name).Caption("Nombre").ValidationRules(s => s.AddRequired().Message("Campo Obligatorio")).FormItem(e => e.Editor(s => s.TextBox()));
@@ -78,8 +80,31 @@
     function IniciaEdicion(e)
     {
         editando = true;
+        $("#Usuarios").dxDataGrid("instance").columnOption("DocumentType.Id", "allowEditing", false);
+        $("#Usuarios").dxDataGrid("instance").columnOption("Document", "allowEditing", false);
 
     } 
+
+    function insertando(e)
+    {
+        editando = false;
+        $("#Usuarios").dxDataGrid("instance").columnOption("DocumentType.Id", "allowEditing", true);
+        $("#Usuarios").dxDataGrid("instance").columnOption("Document", "allowEditing", true);
+    }
+
+    function customize(e)
+    {
+        if (editando && e.dataField == "Password")
+        {
+            e.visible = false;
+        }
+        else
+        {
+            e.visible = true;
+        }
+        console.log(e);
+    }
+    
 
     function CloseSesion()
     {
